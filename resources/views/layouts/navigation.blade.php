@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        <img src="/img/tut.png" alt="tutwuri" width="40px" height="40px">
                     </a>
                 </div>
 
@@ -14,6 +14,18 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('kelas.view')" :active="request()->routeIs('kelas.view')">
+                        {{ __('Kelas') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('pengguna.view')" :active="request()->routeIs('pengguna.view')">
+                        {{ __('Pengguna') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('lab.view')" :active="request()->routeIs('lab.view')">
+                        {{ __('Lab') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('peminjaman.view')" :active="request()->routeIs(['peminjaman.view','forms.view'])">
+                        {{ __('Peminjaman') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -69,6 +81,18 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('pengguna.view')" :active="request()->routeIs('pengguna.view')">
+                {{ __('Pengguna') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('kelas.view')" :active="request()->routeIs('kelas.view')">
+                {{ __('kelas') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('lab.view')" :active="request()->routeIs('lab.view')">
+                {{ __('LAB') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('peminjaman.view')" :active="request()->routeIs(['peminjaman.view','forms.view'])">
+                {{ __('Peminjaman') }}
             </x-responsive-nav-link>
         </div>
 
