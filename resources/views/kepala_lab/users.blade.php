@@ -99,7 +99,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <form class="flex items-center" action="{{route('pengguna.search')}}" method="GET">
+                            <form class="flex items-center" action="{{ route('pengguna.search') }}" method="GET">
                                 <label for="simple-search" class="sr-only">Search</label>
                                 <div class="relative w-full">
                                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -112,7 +112,7 @@
                                     </div>
                                     <input type="text" id="simple-search"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="Cari nama pengguna ... " name="cari">
+                                        placeholder="Cari pengguna ... " name="cari">
                                 </div>
                                 <button type="submit"
                                     class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -182,7 +182,8 @@
                                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                                                 data-modal-toggle="update-user-{{ $kl->id }}"
                                                 data-modal-target="update-user-{{ $kl->id }}"
-                                                @if (Auth::user()->id == $kl->id) disabled @endif><i class='bx bx-edit bx-sm'></i></button>
+                                                @if (Auth::user()->id == $kl->id) disabled @endif><i
+                                                    class='bx bx-edit bx-sm'></i></button>
                                             {{-- Modal edit --}}
                                             <div id="update-user-{{ $kl->id }}" tabindex="-1"
                                                 aria-hidden="true"
@@ -237,7 +238,7 @@
                                                                         placeholder="johndoe@gmail.com"
                                                                         value="{{ $kl->email }}" required>
                                                                 </div>
-                                                                
+
                                                                 <div class="col-span-2">
                                                                     <label for="countries"
                                                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -245,7 +246,9 @@
                                                                     <select id="countries" name="role_id" required
                                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                                                         @foreach ($roles as $item)
-                                                                            <option {{$kl->role_id == $item->id  ? 'selected' : ''}} value="{{ $item->id }}" >
+                                                                            <option
+                                                                                {{ $kl->role_id == $item->id ? 'selected' : '' }}
+                                                                                value="{{ $item->id }}">
                                                                                 {{ $item->role_name }}
                                                                             </option>
                                                                         @endforeach
@@ -275,7 +278,8 @@
                                                 class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3"
                                                 data-modal-target="hapus-{{ $kl->id }}"
                                                 data-modal-toggle="hapus-{{ $kl->id }}"
-                                                @if (Auth::user()->id == $kl->id) disabled @endif><i class='bx bx-trash-alt bx-sm'></i></button>
+                                                @if (Auth::user()->id == $kl->id) disabled @endif><i
+                                                    class='bx bx-trash-alt bx-sm'></i></button>
                                             {{-- Modal hapus --}}
                                             <div id="hapus-{{ $kl->id }}" tabindex="-1"
                                                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">

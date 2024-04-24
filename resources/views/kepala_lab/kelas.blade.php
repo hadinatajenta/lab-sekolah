@@ -13,7 +13,7 @@
                         <div class="flex justify-between items-center mb-3">
                             <!-- Modal toggle -->
                             <button data-modal-target="kelas-modal" data-modal-toggle="kelas-modal"
-                                class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 mb-3 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                class=" @if (Auth::user()->role_id == 3) hidden @endif block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 mb-3 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 type="button">
                                 Tambah kelas
                             </button>
@@ -57,6 +57,15 @@
                                                         required="">
                                                 </div>
                                                 <div class="col-span-2">
+                                                    <label for="nama_kelas"
+                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jumlah
+                                                        Siswa
+                                                    </label>
+                                                    <input type="number" name="jumlah_siswa" id="jumlah_siswa"
+                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                        placeholder="Masukkan Jumlah Siswa" required="">
+                                                </div>
+                                                <div class="col-span-2">
                                                     <label for="wali_kelas"
                                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Wali
                                                         kelas</label>
@@ -81,7 +90,7 @@
                                 </div>
                             </div>
 
-                            <form class="flex items-center" action="{{route('kelas.view')}}" method="GET">
+                            <form class="flex items-center" action="{{ route('kelas.view') }}" method="GET">
                                 <label for="simple-search" class="sr-only">Search</label>
                                 <div class="relative w-full">
                                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -129,7 +138,8 @@
                                     <th scope="col" class="px-6 py-3">
                                         Wali kelas
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col"
+                                        class=" @if (Auth::user()->role_id == 3) hidden @endif px-6 py-3">
                                         Aksi
                                     </th>
                                 </tr>
@@ -153,14 +163,17 @@
                                             {{ $kl->wali_kelas }}
 
                                         </td>
-                                        <td class="flex items-center px-6 py-4">
+                                        <td
+                                            class="flex items-center px-6 py-4 @if (Auth::user()->role_id == 3) hidden @endif">
                                             {{-- Button edit --}}
                                             <a href="#"
                                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                                                 data-modal-toggle="update-kelas-{{ $kl->id }}"
-                                                data-modal-target="update-kelas-{{ $kl->id }}"><i class='bx bx-edit bx-sm'></i></a>
+                                                data-modal-target="update-kelas-{{ $kl->id }}"><i
+                                                    class='bx bx-edit bx-sm'></i></a>
                                             {{-- Modal edit --}}
-                                            <div id="update-kelas-{{ $kl->id }}" tabindex="-1" aria-hidden="true"
+                                            <div id="update-kelas-{{ $kl->id }}" tabindex="-1"
+                                                aria-hidden="true"
                                                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                                                 <div class="relative p-4 w-full max-w-md max-h-full">
                                                     <!-- Modal content -->
@@ -170,7 +183,7 @@
                                                             class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                                             <h3
                                                                 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                                                Buat kelas baru
+                                                                Update data kelas
                                                             </h3>
                                                             <button type="button"
                                                                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -233,7 +246,8 @@
                                             <a href="#"
                                                 class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3"
                                                 data-modal-target="hapus-{{ $kl->id }}"
-                                                data-modal-toggle="hapus-{{ $kl->id }}"><i class='bx bx-trash-alt bx-sm'></i></a>
+                                                data-modal-toggle="hapus-{{ $kl->id }}"><i
+                                                    class='bx bx-trash-alt bx-sm'></i></a>
                                             {{-- Modal hapus --}}
                                             <div id="hapus-{{ $kl->id }}" tabindex="-1"
                                                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">

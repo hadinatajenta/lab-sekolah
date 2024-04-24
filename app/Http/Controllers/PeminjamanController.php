@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -24,39 +25,24 @@ class PeminjamanController extends Controller
     // daftar jadwal lab
     public function pinjaman(Request $request): View
     {
-        $peminjaman  = Peminjaman::paginate(10);
-
-        // Update status untuk jadwal peminjaman LAB
-        foreach ($peminjaman as $pjm) {
-            $now = Carbon::now('Asia/Jakarta'); // Time zone Jakarta
-            $waktuMulai = Carbon::createFromFormat('Y-m-d H:i:s', $pjm->tanggal . ' ' . $pjm->waktu_mulai, 'Asia/Jakarta');
-            $waktuSelesai = Carbon::createFromFormat('Y-m-d H:i:s', $pjm->tanggal . ' ' . $pjm->waktu_selesai, 'Asia/Jakarta');
-            // Jadikan Berjalan
-            if ($now->greaterThanOrEqualTo($waktuMulai) && $now->lessThan($waktuSelesai)) {
-                if ($pjm->status !== 'Berjalan') {
-                    $pjm->status = 'Berjalan';
-                    $pjm->save();
-                }
-                // Jadikan Selesai
-            } elseif ($now->greaterThanOrEqualTo($waktuSelesai)) {
-                if ($pjm->status !== 'Selesai') {
-                    $pjm->status = 'Selesai';
-                    $pjm->save();
-                }
-            }
-        }
+        $peminjaman = Peminjaman::paginate(10);
 
         //  Order by DESC
-        $pinjaman = Peminjaman::orderBy('tanggal', 'desc')->orderBy('waktu_mulai', 'desc')->paginate(10);
+        $pinjaman = Peminjaman::orderBy('tanggal', 'desc')->orderBy('waktu_mulai', 'desc')->paginate(5);
 
         // Search
         $keyword = $request->input('keyword');
+        $filter = $request->input('filter');
+
         $jadwal = Peminjaman::query()
             ->when($keyword, function ($query, $keyword) {
                 return $query->where('waktu_mulai', 'like', "%{$keyword}%")
                     ->orWhere('lab_id', 'like', "%{$keyword}%")
                     ->orWhere('tanggal', 'like', "%{$keyword}%")
                     ->orWhere('status', 'like', "%{$keyword}%");
+            })
+            ->when($filter, function ($query, $filter) {
+                return $query->where('status', $filter);
             })
             ->orderBy('tanggal', 'desc')
             ->orderBy('waktu_mulai', 'desc')
@@ -67,7 +53,7 @@ class PeminjamanController extends Controller
     // view form peminjaman lab
     public function form_peminjaman()
     {
-        $user = User::where('role_id', '3')->orderBy('name', 'asc')->get();
+        $user = User::where('role_id', '2')->orderBy('name', 'asc')->get();
         $kelas = Kelas::orderBy('nama_kelas', 'asc')->get();
         $lab = Lab::where('status', 'Tersedia')->get();
 
@@ -76,7 +62,7 @@ class PeminjamanController extends Controller
 
     public function create_peminjaman(Request $request)
     {
-        $validate = $request->validate([
+        $validate = Validator::make($request->all(), [
             'lab_id' => 'required|not_in:tidak tersedia',
             'user_id' => 'required',
             'kelas_id' => 'required',
@@ -85,7 +71,6 @@ class PeminjamanController extends Controller
             'waktu_mulai' => 'required|after:now',
             'waktu_selesai' => 'required|after:waktu_mulai',
         ]);
-
         DB::beginTransaction();
         try {
 
@@ -107,7 +92,8 @@ class PeminjamanController extends Controller
             $peminjaman->tanggal = $request->tanggal;
             $peminjaman->waktu_mulai = $request->waktu_mulai;
             $peminjaman->waktu_selesai = $request->waktu_selesai;
-            $peminjaman->status = 'Dijadwalkan';
+            $peminjaman->status = (Auth::user()->role_id == 3) ? 'Menunggu' : 'Dijadwalkan';
+
             $peminjaman->save();
 
             DB::commit();
@@ -121,7 +107,7 @@ class PeminjamanController extends Controller
     public function edit_peminjaman($id): View
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $user = User::where('role_id', '3')->orderBy('name', 'desc')->get();
+        $user = User::where('role_id', '2')->orderBy('name', 'desc')->get();
         $kelas = Kelas::orderBy('nama_kelas', 'asc')->get();
         $lab = Lab::where('status', 'Tersedia')->get();
 
@@ -131,7 +117,7 @@ class PeminjamanController extends Controller
     public function update_peminjaman(Request $request, $id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'lab_id' => 'required|not_in:Tidak tersedia',
             'user_id' => 'required',
             'kelas_id' => 'required',
@@ -141,7 +127,8 @@ class PeminjamanController extends Controller
             'waktu_selesai' => 'required|after:waktu_mulai',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
+
             return back()->with('error', $validator)->withInput();
         }
 
@@ -185,7 +172,7 @@ class PeminjamanController extends Controller
         try {
             $lab->delete();
 
-            if (!$lab) {
+            if (!$lab || $lab->status = 'selesai' || $lab->status == 'berjalan') {
                 return redirect()->back()->with('error', 'Gagal hapus Jadwal LAB (jadwal tidak ditemukan)');
             }
             DB::commit();

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Auth;
 
 
 class UsersController extends Controller
@@ -24,17 +25,21 @@ class UsersController extends Controller
         $keyword = $request->input('cari');
         $roles = Roles::all();
         $user = User::query()
-        ->where('name', 'LIKE', "%{$keyword}%")
-        ->orWhere('email', 'LIKE', "%{$keyword}%")
-        ->get();
+            ->where('name', 'LIKE', "%{$keyword}%")
+            ->orWhere('email', 'LIKE', "%{$keyword}%")
+            ->get();
 
-        return view('kepala_lab.users',compact('user','roles'));
+        if ($user->isEmpty()) {
+            return view('kepala_lab.users', compact('roles', 'user'))->with('error', 'User not found');
+        }
+        return view('kepala_lab.users', compact('user', 'roles'));
     }
 
     // View users
-    public function users_view(): View
+    public function users_view(Request $request): View
     {
         $user = User::paginate(15);
+        $button = $request->input('filter');
         $roles = Roles::all();
         return view('kepala_lab.users', compact('user', 'roles'));
     }
@@ -42,33 +47,27 @@ class UsersController extends Controller
     // Create Users
     public function create_user(Request $request)
     {
-
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', Rules\Password::defaults()],
+            'password' => ['required'],
             'role_id' => ['required']
         ]);
 
-        DB::beginTransaction();
-        try {
-            $user = new User();
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = Hash::make($request->password);
-            $user->role_id = $request->role_id;
-            $user->save();
+        $user = new User;
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->input('password'));
+        $user->role_id = $request->role_id;
+        $user->save();
 
-            $roles = Roles::findOrFail($user->role_id);
-            $roles->jumlah_user = $roles->jumlah_user + 1;
-            $roles->save();
+        // dd($user->role_id);
 
-            DB::commit();
-            return redirect()->back()->with('success', 'Berhasil menambahkan user!');
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal menambahkan user!');
-        }
+        $roles = Roles::find($user->role_id);
+        $roles->jumlah_user = $roles->jumlah_user + 1;
+        $roles->save();
+
+        return redirect()->route('pengguna.view')->with('success', 'Berhasil menambahkan user');
     }
 
     // Update users
@@ -84,8 +83,8 @@ class UsersController extends Controller
 
         DB::beginTransaction();
         try {
-            $role_lama =  $users->role_id;
-            $role_baru =  $request->role_id;
+            $role_lama = $users->role_id;
+            $role_baru = $request->role_id;
 
             $users->name = $request->name;
             $users->email = $request->email;
@@ -116,7 +115,7 @@ class UsersController extends Controller
 
     public function delete_user($id)
     {
-        $user  = User::findOrFail($id);
+        $user = User::findOrFail($id);
 
         DB::beginTransaction();
         try {
@@ -125,14 +124,14 @@ class UsersController extends Controller
             $user->delete();
 
             $role = Roles::findOrFail($role_id);
-            $role->jumlah_user = max($role->jumlah_user - 1, 0); 
+            $role->jumlah_user = max($role->jumlah_user - 1, 0);
             $role->save();
 
             DB::commit();
             return redirect()->back()->with('success', 'User berhasil dihapus!');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal menghapus user!');
+            return redirect()->back()->with('error', 'Gagal menghapus user!' . $th->getMessage());
         }
     }
 }

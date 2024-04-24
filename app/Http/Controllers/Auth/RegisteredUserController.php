@@ -37,15 +37,15 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $role_id = 1;
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => $role_id
+            'role_id' => 1
         ]);
 
-        $roles = Roles::findOrFail($role_id);
+        $roles = Roles::findOrFail(1);
         $roles->jumlah_user = $roles->jumlah_user+1;
         $roles->save();
 

@@ -25,7 +25,8 @@
                                 @foreach ($lab as $labs)
                                     <option value="{{ $labs->id }}"
                                         @if ($labs->status == 'Tidak tersedia') disabled @endif
-                                        {{ $peminjaman->lab_id ? 'selected' : '' }}>{{ $labs->nama_lab }}</option>
+                                        {{ $peminjaman->lab_id == $labs->id ? 'selected' : '' }}>{{ $labs->nama_lab }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -37,9 +38,11 @@
                             <select id="user_id" name="user_id"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 @foreach ($user as $usr)
-                                    @if ($usr->role_id == 3)
+                                    @if ($usr->role_id == 2)
                                         <option value="{{ $usr->id }}"
-                                            {{ $peminjaman->user->name ? 'selected' : '' }}>{{ $usr->name }}</option>
+                                            @if ($peminjaman->user_id == $usr->id) selected @endif>
+                                            {{ $usr->name ?? '-' }}
+                                        </option>
                                     @endif
                                 @endforeach
                             </select>

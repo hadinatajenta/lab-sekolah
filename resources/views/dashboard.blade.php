@@ -32,7 +32,7 @@
                                                 </span>
                                                 <span
                                                     class="text-xs font-semibold bg-blue-100 text-blue-800 py-1 px-3 rounded-full">Kelas
-                                                    {{ $jdwl->kelas->nama_kelas }} 
+                                                    {{ $jdwl->kelas->nama_kelas }}
                                                 </span>
                                             </li>
                                         @endforeach
@@ -41,8 +41,9 @@
                             </div>
 
                             <div class="text-center my-4 sm:my-0 self-end">
-                                <a href="{{route('peminjaman.view')}}"
-                                class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Lihat semua</a>
+                                <a href="{{ route('peminjaman.view') }}"
+                                    class="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Lihat
+                                    semua</a>
                             </div>
                         </div>
 
@@ -89,7 +90,8 @@
                             <div class="flex my-4">
                                 <ul class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
                                     <li>
-                                        Tanggal biru menandakan adanya Jadwal lab pada hari tersebut.
+                                        <span class="text-blue-500">Tanggal biru</span> menandakan adanya Jadwal lab
+                                        pada hari tersebut.
                                     </li>
                                 </ul>
                             </div>
