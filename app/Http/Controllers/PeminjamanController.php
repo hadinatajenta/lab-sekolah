@@ -53,7 +53,7 @@ class PeminjamanController extends Controller
     // view form peminjaman lab
     public function form_peminjaman()
     {
-        $user = User::where('role_id', '2')->orderBy('name', 'asc')->get();
+        $user = User::where('role_id', '3')->orderBy('name', 'asc')->get();
         $kelas = Kelas::orderBy('nama_kelas', 'asc')->get();
         $lab = Lab::where('status', 'Tersedia')->get();
 
