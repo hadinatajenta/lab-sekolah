@@ -18,15 +18,7 @@ class KelasController extends Controller
     // View Kelas
     public function kelas_view(Request $request): View
     {
-        if (Auth::check() && Auth::user()->role_id === 3) {
-            // Jika pengguna memiliki role_id = 3, kembalikan respons yang sesuai
-            abort(403, 'Unauthorized action.');
-        }
-        $keyword = $request->input('kelas');
-
-        $kelas = Kelas::query()
-            ->where('nama_kelas', 'LIKE', "%{$keyword}%")
-            ->orderBy('nama_kelas', 'asc')->get();
+        $kelas = Kelas::paginate(10);
         return view('kepala_lab.kelas', compact('kelas'));
     }
 
@@ -94,5 +86,17 @@ class KelasController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Gagal Hapus kelas!');
         }
+    }
+
+
+    public function CariKelas(Request $request)
+    {
+        $keyword = $request->input('kelas');
+
+        $hasilCari = Kelas::query()
+            ->where('nama_kelas', 'LIKE', "%{$keyword}%")
+            ->orderBy('nama_kelas', 'asc')->get();
+
+        return view('kepala_lab.kelas', compact('hasilCari'));
     }
 }
