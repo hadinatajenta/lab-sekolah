@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +19,35 @@ class KelasController extends Controller
     // View Kelas
     public function kelas_view(Request $request): View
     {
-        $kelas = Kelas::paginate(10);
-        return view('kepala_lab.kelas', compact('kelas'));
+        abort_if(Auth::user()->role_id == 4, 403, 'Kamu tidak memiliki akses');
+
+        $cariKelas = $request->input('query');
+        $kelasQuery = Kelas::orderBy('nama_kelas', 'ASC');
+        if ($cariKelas) {
+            $kelasQuery = Kelas::where('nama_kelas', 'LIKE', "%$cariKelas%");
+        }
+
+        $kelas = $kelasQuery->paginate(10);
+
+        $siswa = User::where('role_id', '4')->count();
+        $laki = User::where('jenis_kelamin', 'Laki-laki')->count();
+        $cewe = User::where('jenis_kelamin', 'Perempuan')->count();
+
+        $totalSiswaPerKelas = User::where('role_id', 4)
+            ->select('kelas_id', \DB::raw('count(*) as total_siswa'))
+            ->groupBy('kelas_id')
+            ->pluck('total_siswa', 'kelas_id');
+
+
+        return view('kepala_lab.kelas', compact('kelas', 'siswa', 'laki', 'cewe', 'totalSiswaPerKelas'));
+    }
+
+    //Daftar siswa berdasarkan kelas
+    public function getSiswaByKelas($id): View
+    {
+        $kelas = Kelas::findOrFail($id);
+        $siswa = User::where('kelas_id', $id)->where('role_id', 4)->get();
+        return view('kepala_lab.kelassiswa', compact('siswa', 'kelas'));
     }
 
     // Create kelas
@@ -28,17 +56,13 @@ class KelasController extends Controller
         $request->validate([
             'nama_kelas' => 'required|unique:kelas,nama_kelas',
             'wali_kelas' => 'required',
-            'jumlah_siswa' => 'required|not_in:0',
         ]);
 
-        DB::beginTransaction();
         try {
             $newKelas = new Kelas();
-            $newKelas->nama_kelas = $request->nama_kelas;
-            $newKelas->wali_kelas = $request->wali_kelas;
-            $newKelas->jumlah_siswa = $request->jumlah_siswa;
+            $newKelas->nama_kelas = $request->input('nama_kelas');
+            $newKelas->wali_kelas = $request->input('wali_kelas');
             $newKelas->save();
-
             DB::commit();
             return redirect()->back()->with('success', 'Berhasil menambahkan kelas baru');
         } catch (\Throwable $th) {
@@ -84,7 +108,7 @@ class KelasController extends Controller
             DB::commit();
             return redirect()->back()->with('success', 'Berhasil hapus data kelas ');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Gagal Hapus kelas!');
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 

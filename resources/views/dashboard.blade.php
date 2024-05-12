@@ -7,6 +7,49 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- first section --}}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
+                <div class="p-6 text-gray-900">
+                    <div class="mb-4">
+                        <h4 class="font-bold text-2xl">Dashboard</h4>
+                        <p class="text-gray-600">Hanya Kepala LAB yang dapat Mengelola Dashboard ini.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-1 md:grid-cols-3 grid-cols-1 gap-4 justify-items-start">
+                        {{-- 1 --}}
+                        <div class="bg-[#fcebfe] w-full rounded p-4 flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-buildings bx-lg text-[#ca5ad7]'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-[#923c9c]">Jumlah Lab</span>
+                                <p class="text-lg">{{ $lab }}</p>
+                            </div>
+                        </div>
+                        {{-- 2 --}}
+                        <div class="bg-[#f0ffec] w-full rounded p-4 flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-user bx-lg text-[#6ecc53]'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-[#4f8b3f]">Jumlah Guru</span>
+                                <p class="text-lg"> {{ $guru }} </p>
+                            </div>
+                        </div>
+                        {{-- 3 --}}
+                        <div class="bg-[#ffebf0] w-full rounded p-4  flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-user bx-lg text-[#f199af]'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-[#ae596e]">Jumlah Siswa</span>
+                                <p class="text-lg">10</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     {{-- first row --}}
@@ -14,6 +57,7 @@
                         {{-- Kiri / Jadwal hari ini --}}
                         <div>
                             <h2 class="text-lg font-semibold text-gray-800">Ringkasan Jadwal Lab Hari Ini</h2>
+                            <p class="text-gray-600">Lihat semua jadwal di halaman Peminjaman </p>
                             <div class="mt-4">
                                 <ul class="divide-y divide-gray-200">
                                     @if ($jadwals->isEmpty())
@@ -50,7 +94,8 @@
                         {{-- Kanan / Kalendar --}}
                         <div>
                             <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-xl font-semibold text-gray-700">Jadwal Lab {{ $bulan }}
+                                <h2 class="text-xl font-semibold text-gray-700">Jadwal Lab Bulan {{ $bulan }}
+                                    Tahun
                                     {{ $tahun }}
                                 </h2>
                             </div>

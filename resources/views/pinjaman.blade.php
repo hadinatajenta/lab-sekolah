@@ -7,13 +7,62 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
+                <div class="p-6 text-gray-900">
+                    <div class="mb-4">
+                        <h4 class="font-bold text-2xl">Jadwal Peminjaman Lab</h4>
+                        @if (Auth::user()->role_id == 4)
+                            <p class="text-gray-600">Kamu mendapat hak akses "Hanya Lihat".</p>
+                        @else
+                            <p class="text-gray-600">Hanya Kepala LAB yang dapat Mengelola Dashboard ini.</p>
+                        @endif
+                    </div>
+                    <div class="grid sm:grid-cols-1 md:grid-cols-3 grid-cols-1 gap-4 justify-items-start">
+                        {{-- 1 --}}
+                        <div class="bg-[#fcebfe] w-full rounded p-4 flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-time bx-lg text-[#ca5ad7]'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-[#923c9c]">Total jadwal</span>
+                                <p class="text-lg">{{ $totalJadwal->count() }}</p>
+                            </div>
+                        </div>
+                        {{-- 2 --}}
+                        <div class="bg-[#f0ffec] w-full rounded p-4 flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-user bx-lg text-[#6ecc53]'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-[#4f8b3f]">Jadwal Hari ini</span>
+                                <p class="text-lg"> {{ $jadwals->count() }} </p>
+                            </div>
+                        </div>
+                        {{-- 3 --}}
+                        <div class="bg-[#ffebf0] w-full rounded p-4  flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-user bx-lg text-[#f199af]'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-[#ae596e]">Jumlah Siswa</span>
+                                <p class="text-lg">10</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
             <div class="bg-white overflow-hidden  sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex items-center justify-between  mb-3">
                         {{-- Form peminjaman --}}
-                        <a href="{{ route('forms.view') }}"
-                            class="text-white flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5  me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                            style="display: inline-block; white-space:nowrap"><i class='bx bx-plus'></i> Jadwal</a>
+                        @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
+                            <a href="{{ route('forms.view') }}"
+                                class="text-white flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5  me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                style="display: inline-block; white-space:nowrap">
+                                <i class='bx bx-plus'></i> Jadwal
+                            </a>
+                        @endif
                         <div class="flex items-center">
                             {{-- Filter --}}
                             <button data-modal-target="fillter" data-modal-toggle="fillter"
@@ -119,7 +168,7 @@
                                     </div>
                                     <input type="text" id="simple-search"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="Cari jadwal ... " name="keyword">
+                                        placeholder="Cari berdasarkan tanggal ... " name="keyword">
                                 </div>
                                 <button type="submit"
                                     class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -143,12 +192,8 @@
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="p-4">
-                                        <div class="flex items-center">
-                                            <input id="checkbox-all-search" type="checkbox"
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                                        </div>
+                                    <th scope="col" class="px-6 py-3">
+                                        No
                                     </th>
                                     <th scope="col" class="px-6 py-3">
                                         LAB
@@ -235,26 +280,22 @@
                                         </td>
                                     </tr>
                                 @elseif ($jadwal)
-                                    @foreach ($jadwal as $pjm)
+                                    @foreach ($jadwal as $index => $pjm)
                                         <tr
                                             class="bg-white  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                            <td class="w-4 p-4">
-                                                <div class="flex items-center">
-                                                    <input id="checkbox-table-search-1" type="checkbox"
-                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                    <label for="checkbox-table-search-1"
-                                                        class="sr-only">checkbox</label>
-                                                </div>
-                                            </td>
+                                            <th scope="row"
+                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {{ $index + 1 }}
+                                            </th>
                                             <th scope="row"
                                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{ $pjm->lab->nama_lab }}
                                             </th>
                                             <td class="px-6 py-4">
-                                                {{ $pjm->user->name ?? 'Pengguna tidak ditemukan' }}
+                                                {{ $pjm->user->name ?? '-' }}
                                             </td>
                                             <td class="px-6 py-4">
-                                                {{ $pjm->kelas->nama_kelas }}
+                                                {{ $pjm->kelas->nama_kelas ?? '-' }}
                                             </td>
                                             <td class="px-6 py-4">
                                                 {{ $pjm->mata_pelajaran }}
@@ -302,18 +343,30 @@
                                                 @endif
                                             </td>
                                             <td class="flex items-center px-6 py-4">
-                                                {{-- Button edit --}}
-                                                <a href="{{ route('edit.view', $pjm->id) }}"
-                                                    class="font-medium flex items-center no-underline text-blue-600 dark:text-blue-500 ">
-                                                    <i class='bx bx-edit bx-sm'></i> </a>
-                                                {{-- Button hapus --}}
-                                                <button href="#"
-                                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3 @if ($pjm->status == 'Berjalan' || $pjm->status == 'Selesai') cursor-not-allowed @endif
+                                                @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
+                                                    {{-- Button edit --}}
+                                                    <a href="{{ route('edit.view', $pjm->id) }}"
+                                                        class="font-medium flex items-center no-underline text-blue-600 dark:text-blue-500 ">
+                                                        <i class='bx bx-edit bx-sm'></i>
+                                                    </a>
+                                                @else
+                                                    <i class='bx bx-edit bx-sm'></i>
+                                                @endif
+
+                                                @if (Auth::user()->role_id == 4)
+                                                    <i class='bx bx-trash-alt bx-sm'></i>
+                                                @else
+                                                    {{-- Button hapus --}}
+                                                    <button
+                                                        class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3 @if ($pjm->status == 'Berjalan' || $pjm->status == 'Selesai') cursor-not-allowed @endif
                                                     "
-                                                    data-modal-target="hapus-{{ $pjm->id }}"
-                                                    data-modal-toggle="hapus-{{ $pjm->id }}"
-                                                    @if ($pjm->status == 'Berjalan' || $pjm->status == 'Selesai') disabled @endif><i
-                                                        class='bx bx-trash-alt bx-sm'></i></button>
+                                                        data-modal-target="hapus-{{ $pjm->id }}"
+                                                        data-modal-toggle="hapus-{{ $pjm->id }}"
+                                                        @if ($pjm->status == 'Berjalan' || $pjm->status == 'Selesai') disabled @endif>
+                                                        <i class='bx bx-trash-alt bx-sm'></i>
+                                                    </button>
+                                                @endif
+
                                                 {{-- Modal hapus --}}
                                                 <div id="hapus-{{ $pjm->id }}" tabindex="-1"
                                                     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">

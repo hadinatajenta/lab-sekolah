@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 
 </head>
 
@@ -20,7 +22,7 @@
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
                 {{-- Icon --}}
-                <img src="/img/tut.png" class="h-8" alt="Flowbite Logo" />
+                <img src="/img/logooo.jpeg" class="h-8" alt="Flowbite Logo" />
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SMPN28</span>
             </a>
             {{-- Hamburger menu --}}
@@ -78,7 +80,7 @@
                     28</h1>
                 <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
                     Dapatkan Informasi Jadwal LAB melalui Sistem Informasi Penjadwalan LAB SMPN 28 Bandar Lampung.</p>
-                <a href="#"
+                <a href="#jadwal"
                     class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white  rounded-lg bg-blue-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
                     Lihat Jadwal
                     <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20"
@@ -91,7 +93,7 @@
 
             </div>
             <div class=" lg:mt-0 lg:col-span-5 lg:flex">
-                <img src="/img/jadwal.svg" alt="mockup">
+                <img src="/img/welcome.jpeg" class="rounded" alt="mockup">
             </div>
         </div>
     </section>
@@ -125,7 +127,9 @@
             </div>
         </div>
     </section>
-    <section id="jadwal" class="py-12 px-6" style="background: #f4f5fa">
+
+    {{-- jadwal hari ini --}}
+    <section id="jadwal" class="py-12 px-6 bg-white">
         <div class="grid max-w-screen-xl mx-auto bg-white rounded-xl p-8 lg:gap-8 xl:gap-0 lg:grid-cols-12 lg:py-16">
             <div class="lg:col-span-5 flex justify-center">
                 <img src="/img/jadwal2.svg" alt="Classroom" class="max-w-full h-auto">
@@ -140,28 +144,84 @@
                 </p>
                 <div class="flex flex-col space-y-4">
                     <!-- Jadwal -->
-                    @foreach ($jadwals as $jdwl)
+                    @forelse ($jadwals as $jadwal)
                         <div class="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
-                            <span class="font-medium text-gray-800">
-                                {{ $jdwl->kelas->nama_kelas ?? '-' }} |
-                                {{ $jdwl->mata_pelajaran ?? 'Tidak ada' }} -
-                                {{ $jdwl->lab->nama_lab ?? 'Tidak ada' }}
-                            </span>
-                            <span class="text-gray-600">
-                                {{ date('H:i', strtotime($jdwl->waktu_mulai)) ?? '00:00' }} -
-                                {{ date('H:i', strtotime($jdwl->waktu_selesai)) ?? '00:00' }}
+                            <div class="d-flex items-center">
+                                <span class="font-medium text-gray-800 ">
+                                    {{ $jadwal->kelas->nama_kelas ?? '-' }} |
+                                    {{ $jadwal->mata_pelajaran ?? 'Tidak ada' }} -
+                                    {{ $jadwal->lab->nama_lab ?? 'Tidak ada' }}
+                                </span>
+                            </div>
+
+                            <span class="text-gray-600 flex items-center">
+                                <i class='bx bx-time  mr-2'></i>
+                                {{ date('H:i', strtotime($jadwal->waktu_mulai)) ?? '00:00' }} -
+                                {{ date('H:i', strtotime($jadwal->waktu_selesai)) ?? '00:00' }}
                             </span>
                         </div>
-                    @endforeach
-                    <!-- Tambah jadwal lebih banyak sesuai kebutuhan -->
-                    {{-- <a href="#"
-                        class="px-5 py-3 bg-blue-700 text-white rounded-lg text-center font-medium hover:bg-blue-800">
-                        Lihat Semua Jadwal
-                    </a> --}}
+                    @empty
+                        <div class="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
+                            <span class="font-medium text-gray-800">
+                                <i class='bx bxs-hand'></i> Tidak ada jadwal hari ini
+                            </span>
+                        </div>
+                    @endforelse
                 </div>
+                <div class="flex items-center"></div>
             </div>
         </div>
     </section>
+
+
+    <footer style="background: #f4f5fa">
+        <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+            <div class="md:flex md:justify-between">
+                <div class="mb-6 md:mb-0">
+                    <a href="https://flowbite.com/" class="flex items-center">
+                        <img src="/img/logooo.jpeg" class="h-8 me-3" alt="FlowBite Logo" />
+                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SMPN
+                            28</span>
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
+                    <div>
+                        <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Resources</h2>
+                        <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                            <li class="mb-4">
+                                <a href="https://flowbite.com/" class="hover:underline">Flowbite</a>
+                            </li>
+                            <li>
+                                <a href="https://tailwindcss.com/" class="hover:underline">Tailwind CSS</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Follow us</h2>
+                        <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                            <li class="mb-4">
+                                <a href="https://www.instagram.com/smpnegeri28bandarlampung/?hl=en"
+                                    class="hover:underline ">Instagram</a>
+                            </li>
+                            <li>
+                                <a href="https://www.youtube.com/c/SMPN28BANDARLAMPUNG/playlists?app=desktop"
+                                    class="hover:underline">YouTube</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+            <div class="sm:flex sm:items-center sm:justify-between">
+                <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2024 <a
+                        href="https://flowbite.com/" class="hover:underline">SMPN 28 Bandar Lampung</a>. All Rights
+                    Reserved.
+                </span>
+            </div>
+        </div>
+    </footer>
+
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>

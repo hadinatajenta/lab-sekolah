@@ -37,5 +37,25 @@
     </body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/datepicker.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.kelas-link').click(function(e) {
+                e.preventDefault();
+                var kelasId = $(this).data('id');
+                $.ajax({
+                    url: '/kelas/siswa/' + kelasId,
+                    type: 'GET',
+                    success: function(response) {
+                        var rows = '';
+                        response.siswa.forEach(function(siswa) {
+                            rows += '<tr><td>' + siswa.nama + '</td><td>' + siswa.nis + '</td><td>' + siswa.alamat + '</td></tr>';
+                        });
+                        $('#siswaTable tbody').html(rows);
+                        $('#siswaModal').show(); // Tampilkan modal
+                    }
+                });
+            });
+        });
+    </script>
 </html>

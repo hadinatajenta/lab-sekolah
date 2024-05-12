@@ -47,6 +47,12 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="foto_profil" :value="__('Foto')" />
+            <x-text-input id="foto_profil" name="foto_profil" type="file" class="mt-1 block w-full" :value="old('foto_profil', $user->foto_profil)" autofocus autocomplete="foto_profil" />
+            <x-input-error class="mt-2" :messages="$errors->get('foto_profil')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

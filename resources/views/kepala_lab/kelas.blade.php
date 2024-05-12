@@ -7,7 +7,78 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- Sction pertama --}}
             <div class="bg-white overflow-hidden  sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <div class="mb-4">
+                        <h4 class="font-bold text-2xl">Daftar Kelas</h4>
+                        @if (Auth::user()->role_id == 1)
+                            <p class="text-gray-600">Kamu bisa menambahkan mengelola daftar kelas dan melihat siswa dari
+                                sini.</p>
+                        @else
+                            <p class="text-gray-600">Kamu mendapat hak akses "Hanya Lihat".</p>
+                        @endif
+                    </div>
+                    <div
+                        class="grid grid-cols-2  sm:grid-cols-2 md:grid-cols-4 lg:grid-gols-4 gap-4 justify-items-center">
+                        <div class="flex items-center space-x-4 bg-purple-100 w-full rounded p-4 ">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-purple-600">Jumlah Kelas</span>
+                                <p class=" text-xl"> {{ $kelas->count() }} </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-[#fdf1e6] w-full rounded p-4">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-[#b97739]">Total siswa</span>
+                                <p class="text-xl text-gray-800"> {{ $siswa }} </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-green-200 w-full rounded p-4 col-sm-12">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-green-600">Siswa Laki-laki</span>
+                                <p class="text-xl text-gray-800">{{ $laki }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-blue-200 w-full rounded p-4 col-sm-12">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-blue-600">Siswa perempuan</span>
+                                <p class="text-xl text-gray-800">{{ $cewe }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Sction kedua --}}
+            <div class="bg-white overflow-hidden  sm:rounded-lg mt-4">
                 <div class="p-6 text-gray-900">
                     <div class="relative overflow-x-auto  sm:rounded-lg">
                         <div class="flex justify-between items-center mb-3">
@@ -49,9 +120,12 @@
                                             <div class="grid gap-4 mb-4 grid-cols-2">
                                                 <div class="col-span-2">
                                                     <label for="nama_kelas"
-                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama
-                                                        kelas</label>
+                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                        Nama
+                                                        kelas <span class="text-red-800">*</span>
+                                                    </label>
                                                     <input type="text" name="nama_kelas" id="nama_kelas"
+                                                        maxlength="2"
                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                         placeholder="Masukkan Nama kelas Seperti : 7A / 8B"
                                                         required="">
@@ -59,7 +133,7 @@
                                                 <div class="col-span-2">
                                                     <label for="nama_kelas"
                                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jumlah
-                                                        Siswa
+                                                        Siswa <span class="text-red-800">*</span>
                                                     </label>
                                                     <input type="number" name="jumlah_siswa" id="jumlah_siswa"
                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -68,7 +142,7 @@
                                                 <div class="col-span-2">
                                                     <label for="wali_kelas"
                                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Wali
-                                                        kelas</label>
+                                                        kelas <span class="text-red-800">*</span></label>
                                                     <input type="text" name="wali_kelas" id="wali_kelas"
                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                         placeholder="Masukkan Nama Wali Kelas" required>
@@ -77,8 +151,8 @@
                                             </div>
                                             <button type="submit"
                                                 class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                                    xmlns="http://www.w3.org/2000/svg">
+                                                <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor"
+                                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd"
                                                         d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
                                                         clip-rule="evenodd"></path>
@@ -96,14 +170,14 @@
                                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2"
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2"
                                                 d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
                                         </svg>
                                     </div>
                                     <input type="text" id="simple-search"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="Cari nama kelas ... " name="kelas">
+                                        placeholder="Cari nama kelas ... " name="query">
                                 </div>
                                 <button type="submit"
                                     class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -116,78 +190,166 @@
                                 </button>
                             </form>
                         </div>
+                        <div class="relative overflow-x-auto  sm:rounded-lg">
 
-                        {{-- notifikasi --}}
-                        <x-alert />
+                            {{-- notifikasi --}}
+                            <x-alert />
 
-                        {{-- table daftar kelas --}}
-                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                            <thead
-                                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" class="p-4">
-                                        <div class="flex items-center">
-                                            <input id="checkbox-all-search" type="checkbox"
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                                        </div>
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Nama Kelas
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Wali kelas
-                                    </th>
-                                    <th scope="col"
-                                        class=" @if (Auth::user()->role_id == 3) hidden @endif px-6 py-3">
-                                        Aksi
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($kelas as $kl)
-                                    <tr
-                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td class="w-4 p-4">
-                                            <div class="flex items-center">
-                                                <input id="checkbox-table-search-1" type="checkbox"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                                            </div>
-                                        </td>
-                                        <th scope="row"
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {{ $kl->nama_kelas }}
+                            {{-- table daftar kelas --}}
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead
+                                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">
+                                            No
                                         </th>
-                                        <td class="px-6 py-4">
-                                            {{ $kl->wali_kelas }}
-
-                                        </td>
-                                        <td
-                                            class="flex items-center px-6 py-4 @if (Auth::user()->role_id == 3) hidden @endif">
-                                            {{-- Button edit --}}
-                                            <a href="#"
-                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                                                data-modal-toggle="update-kelas-{{ $kl->id }}"
-                                                data-modal-target="update-kelas-{{ $kl->id }}"><i
-                                                    class='bx bx-edit bx-sm'></i></a>
-                                            {{-- Modal edit --}}
-                                            <div id="update-kelas-{{ $kl->id }}" tabindex="-1"
-                                                aria-hidden="true"
-                                                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                                <div class="relative p-4 w-full max-w-md max-h-full">
-                                                    <!-- Modal content -->
-                                                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                                        <!-- Modal header -->
+                                        <th scope="col" class="px-6 py-3">
+                                            Kelas
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-nowrap">
+                                            Wali kelas
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Jumlah siswa
+                                        </th>
+                                        <th scope="col"
+                                            class=" @if (Auth::user()->role_id == 3) hidden @endif px-6 py-3">
+                                            Aksi
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($kelas as $index => $kl)
+                                        <tr
+                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            <td class="px-6 py-4">
+                                                <span class="bg-gray-200 p-2 rounded text-nowrap"> {{ $index + 1 }}
+                                                </span>
+                                            </td>
+                                            <th scope="row"
+                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <a href="{{ route('kelas.siswa', $kl->id) }}"
+                                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                    {{ $kl->nama_kelas }} </a>
+                                            </th>
+                                            <td class="px-6 py-4">
+                                                <span class="bg-gray-200 p-2 rounded text-nowrap">
+                                                    {{ $kl->wali_kelas }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <span class="bg-gray-200 p-2 rounded text-center">
+                                                    {{ $totalSiswaPerKelas[$kl->id] ?? '0' }}</span>
+                                            </td>
+                                            <td class="flex items-center px-6 py-4 ">
+                                                {{-- Button edit --}}
+                                                @if (Auth::user()->role_id == 1)
+                                                    <a href="#"
+                                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                                        data-modal-toggle="update-kelas-{{ $kl->id }}"
+                                                        data-modal-target="update-kelas-{{ $kl->id }}">
+                                                        <i class='bx bx-edit bx-sm'></i>
+                                                    </a>
+                                                @else
+                                                    <i class='bx bx-edit bx-sm'></i>
+                                                @endif
+                                                {{-- Modal edit --}}
+                                                <div id="update-kelas-{{ $kl->id }}" tabindex="-1"
+                                                    aria-hidden="true"
+                                                    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                                    <div class="relative p-4 w-full max-w-md max-h-full">
+                                                        <!-- Modal content -->
                                                         <div
-                                                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                                            <h3
-                                                                class="text-lg font-semibold text-gray-900 dark:text-white">
-                                                                Update data kelas
-                                                            </h3>
+                                                            class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                                            <!-- Modal header -->
+                                                            <div
+                                                                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                                                <h3
+                                                                    class="text-lg font-semibold text-gray-900 dark:text-white">
+                                                                    Update data kelas
+                                                                </h3>
+                                                                <button type="button"
+                                                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                                    data-modal-toggle="update-kelas-{{ $kl->id }}">
+                                                                    <svg class="w-3 h-3" aria-hidden="true"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="none" viewBox="0 0 14 14">
+                                                                        <path stroke="currentColor"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                                    </svg>
+                                                                    <span class="sr-only">Close modal</span>
+                                                                </button>
+                                                            </div>
+                                                            <!-- Modal body -->
+                                                            <form class="p-4 md:p-5"
+                                                                action="{{ route('kelas.update', $kl->id) }}"
+                                                                method="post">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <div class="grid gap-4 mb-4 grid-cols-2">
+                                                                    <div class="col-span-2">
+                                                                        <label for="nama_kelas"
+                                                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama
+                                                                            kelas</label>
+                                                                        <input type="text" name="nama_kelas"
+                                                                            id="nama_kelas"
+                                                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                            placeholder="Masukkan Nama kelas Seperti : 7A / 8B"
+                                                                            value="{{ $kl->nama_kelas }}"
+                                                                            required="">
+                                                                    </div>
+                                                                    <div class="col-span-2">
+                                                                        <label for="wali_kelas"
+                                                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Wali
+                                                                            kelas</label>
+                                                                        <input type="text" name="wali_kelas"
+                                                                            id="wali_kelas"
+                                                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                            placeholder="Masukkan Nama Wali Kelas"
+                                                                            value="{{ $kl->wali_kelas }}" required>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="submit"
+                                                                    class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                                    <svg class="me-1 -ms-1 w-5 h-5"
+                                                                        fill="currentColor" viewBox="0 0 20 20"
+                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                        <path fill-rule="evenodd"
+                                                                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                                                            clip-rule="evenodd"></path>
+                                                                    </svg>
+                                                                    Update Kelas
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Button hapus --}}
+                                                @if (Auth::user()->role_id == 1)
+                                                    <a href="#"
+                                                        class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3"
+                                                        data-modal-target="hapus-{{ $kl->id }}"
+                                                        data-modal-toggle="hapus-{{ $kl->id }}"><i
+                                                            class='bx bx-trash-alt bx-sm'></i></a>
+                                                @else
+                                                    <i class='bx bx-trash-alt bx-sm'></i>
+                                                @endif
+                                                {{-- Modal hapus --}}
+                                                <div id="hapus-{{ $kl->id }}" tabindex="-1"
+                                                    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                                    <form action="{{ route('kelas.delete', $kl->id) }}"
+                                                        method="POST"
+                                                        class="relative p-4 w-full max-w-md max-h-full">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <div
+                                                            class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                                             <button type="button"
-                                                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                                                data-modal-toggle="update-kelas-{{ $kl->id }}">
+                                                                class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                                data-modal-hide="hapus-{{ $kl->id }}">
                                                                 <svg class="w-3 h-3" aria-hidden="true"
                                                                     xmlns="http://www.w3.org/2000/svg" fill="none"
                                                                     viewBox="0 0 14 14">
@@ -197,110 +359,40 @@
                                                                 </svg>
                                                                 <span class="sr-only">Close modal</span>
                                                             </button>
-                                                        </div>
-                                                        <!-- Modal body -->
-                                                        <form class="p-4 md:p-5"
-                                                            action="{{ route('kelas.update', $kl->id) }}"
-                                                            method="post">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <div class="grid gap-4 mb-4 grid-cols-2">
-                                                                <div class="col-span-2">
-                                                                    <label for="nama_kelas"
-                                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama
-                                                                        kelas</label>
-                                                                    <input type="text" name="nama_kelas"
-                                                                        id="nama_kelas"
-                                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                                        placeholder="Masukkan Nama kelas Seperti : 7A / 8B"
-                                                                        value="{{ $kl->nama_kelas }}" required="">
-                                                                </div>
-                                                                <div class="col-span-2">
-                                                                    <label for="wali_kelas"
-                                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Wali
-                                                                        kelas</label>
-                                                                    <input type="text" name="wali_kelas"
-                                                                        id="wali_kelas"
-                                                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                                        placeholder="Masukkan Nama Wali Kelas"
-                                                                        value="{{ $kl->wali_kelas }}" required>
-                                                                </div>
-                                                            </div>
-                                                            <button type="submit"
-                                                                class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                                <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor"
-                                                                    viewBox="0 0 20 20"
-                                                                    xmlns="http://www.w3.org/2000/svg">
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                                                        clip-rule="evenodd"></path>
+                                                            <div class="p-4 md:p-5 text-center">
+                                                                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                                                                    aria-hidden="true"
+                                                                    xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                    viewBox="0 0 20 20">
+                                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                                        stroke-linejoin="round" stroke-width="2"
+                                                                        d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                                 </svg>
-                                                                Update Kelas
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {{-- Button hapus --}}
-                                            <a href="#"
-                                                class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3"
-                                                data-modal-target="hapus-{{ $kl->id }}"
-                                                data-modal-toggle="hapus-{{ $kl->id }}"><i
-                                                    class='bx bx-trash-alt bx-sm'></i></a>
-                                            {{-- Modal hapus --}}
-                                            <div id="hapus-{{ $kl->id }}" tabindex="-1"
-                                                class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                                <form action="{{ route('kelas.delete', $kl->id) }}" method="POST"
-                                                    class="relative p-4 w-full max-w-md max-h-full">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                                        <button type="button"
-                                                            class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                                            data-modal-hide="hapus-{{ $kl->id }}">
-                                                            <svg class="w-3 h-3" aria-hidden="true"
-                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                viewBox="0 0 14 14">
-                                                                <path stroke="currentColor" stroke-linecap="round"
-                                                                    stroke-linejoin="round" stroke-width="2"
-                                                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                                            </svg>
-                                                            <span class="sr-only">Close modal</span>
-                                                        </button>
-                                                        <div class="p-4 md:p-5 text-center">
-                                                            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                                                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                                fill="none" viewBox="0 0 20 20">
-                                                                <path stroke="currentColor" stroke-linecap="round"
-                                                                    stroke-linejoin="round" stroke-width="2"
-                                                                    d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                            </svg>
-                                                            <h3
-                                                                class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                                                                kamu yakin ingin menghapus kelas {{ $kl->nama_kelas }}
-                                                                dengan Wali kelas {{ $kl->wali_kelas }} </h3>
-                                                            <button type="submit"
-                                                                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-                                                                Ya, hapus
-                                                            </button>
-                                                            <button data-modal-hide="hapus-{{ $kl->id }}"
-                                                                type="button"
-                                                                class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">No,
-                                                                batal</button>
+                                                                <h3
+                                                                    class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                                                    kamu yakin ingin menghapus kelas
+                                                                    {{ $kl->nama_kelas }}
+                                                                    dengan Wali kelas {{ $kl->wali_kelas }} </h3>
+                                                                <button type="submit"
+                                                                    class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+                                                                    Ya, hapus
+                                                                </button>
+                                                                <button data-modal-hide="hapus-{{ $kl->id }}"
+                                                                    type="button"
+                                                                    class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">No,
+                                                                    batal</button>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
-    </div>
 </x-app-layout>

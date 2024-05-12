@@ -25,6 +25,7 @@ class PeminjamanController extends Controller
     // daftar jadwal lab
     public function pinjaman(Request $request): View
     {
+        $totalJadwal = Peminjaman::all();
         $peminjaman = Peminjaman::paginate(10);
 
         //  Order by DESC
@@ -47,7 +48,12 @@ class PeminjamanController extends Controller
             ->orderBy('tanggal', 'desc')
             ->orderBy('waktu_mulai', 'desc')
             ->paginate(10);
-        return view('pinjaman', compact('pinjaman', 'jadwal'));
+
+        $hariIni = Carbon::today()->toDateString();
+        $jadwals = Peminjaman::where('tanggal', $hariIni)
+            ->orderBy('waktu_mulai', 'desc')
+            ->get();
+        return view('pinjaman', compact('pinjaman', 'jadwal', 'totalJadwal', 'hariIni', 'jadwals'));
     }
 
     // view form peminjaman lab
@@ -71,6 +77,11 @@ class PeminjamanController extends Controller
             'waktu_mulai' => 'required|after:now',
             'waktu_selesai' => 'required|after:waktu_mulai',
         ]);
+
+        if ($validate->fails()) {
+            return redirect()->back()->with('error', 'Gagal, silahkan periksa kembali inputan');
+        }
+
         DB::beginTransaction();
         try {
 
@@ -107,7 +118,7 @@ class PeminjamanController extends Controller
     public function edit_peminjaman($id): View
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $user = User::where('role_id', '2')->orderBy('name', 'desc')->get();
+        $user = User::where('role_id', '3')->orderBy('name', 'desc')->get();
         $kelas = Kelas::orderBy('nama_kelas', 'asc')->get();
         $lab = Lab::where('status', 'Tersedia')->get();
 
@@ -118,7 +129,7 @@ class PeminjamanController extends Controller
     {
         $peminjaman = Peminjaman::findOrFail($id);
         $validator = Validator::make($request->all(), [
-            'lab_id' => 'required|not_in:Tidak tersedia',
+            'lab_id' => 'required',
             'user_id' => 'required',
             'kelas_id' => 'required',
             'mata_pelajaran' => 'required',
@@ -127,10 +138,7 @@ class PeminjamanController extends Controller
             'waktu_selesai' => 'required|after:waktu_mulai',
         ]);
 
-        if ($validator->fails()) {
 
-            return back()->with('error', $validator)->withInput();
-        }
 
         DB::beginTransaction();
 
@@ -144,7 +152,7 @@ class PeminjamanController extends Controller
                 })->exists();
 
             if ($jadwal_bentrok) {
-                return redirect()->back()->with('error', 'Jadwal bentrok dengan peminjaman yang sudah ada.');
+                return redirect()->back()->with('error', 'Jadwal bentrok dengan peminjaman yang sudah ada.')->withInput();
             }
             $peminjaman->lab_id = $request->lab_id;
             $peminjaman->user_id = $request->user_id;
@@ -167,14 +175,13 @@ class PeminjamanController extends Controller
     public function delete($id)
     {
         $lab = Jadwal::findOrFail($id);
-
         DB::beginTransaction();
         try {
+            if (!$lab) {
+                return redirect()->back()->with('error', 'Jadwal Lab tidak ditemukan.');
+            }
             $lab->delete();
 
-            if (!$lab || $lab->status = 'selesai' || $lab->status == 'berjalan') {
-                return redirect()->back()->with('error', 'Gagal hapus Jadwal LAB (jadwal tidak ditemukan)');
-            }
             DB::commit();
             return redirect()->back()->with('success', 'Berhasil hapus Jadwal LAB');
         } catch (\Throwable $th) {

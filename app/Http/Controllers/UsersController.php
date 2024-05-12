@@ -8,8 +8,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Auth;
 
 
 class UsersController extends Controller
@@ -19,29 +17,28 @@ class UsersController extends Controller
         $this->middleware('auth');
     }
 
-    // Search 
-    public function search(Request $request)
-    {
-        $keyword = $request->input('cari');
-        $roles = Roles::all();
-        $user = User::query()
-            ->where('name', 'LIKE', "%{$keyword}%")
-            ->orWhere('email', 'LIKE', "%{$keyword}%")
-            ->get();
-
-        if ($user->isEmpty()) {
-            return view('kepala_lab.users', compact('roles', 'user'))->with('error', 'User not found');
-        }
-        return view('kepala_lab.users', compact('user', 'roles'));
-    }
 
     // View users
     public function users_view(Request $request): View
     {
-        $user = User::paginate(15);
-        $button = $request->input('filter');
         $roles = Roles::all();
-        return view('kepala_lab.users', compact('user', 'roles'));
+        $keyword = $request->input('cari');
+
+        if ($keyword) {
+            $users = User::whereNotIn('role_id', [4])
+                ->where(function ($query) use ($keyword) {
+                    $query->where('name', 'LIKE', "%{$keyword}%")
+                        ->orWhere('email', 'LIKE', "%{$keyword}%");
+                })
+                ->paginate(15);
+        } else {
+            $users = User::whereNotIn('role_id', [4])->paginate(15);
+        }
+
+        $guru = User::where('role_id', 3)->count();
+        $kepalaLab = User::where('role_id', 1)->count();
+
+        return view('kepala_lab.users', compact('users', 'roles', 'guru', 'kepalaLab'));
     }
 
     // Create Users
@@ -51,7 +48,8 @@ class UsersController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required'],
-            'role_id' => ['required']
+            'role_id' => ['required'],
+            'foto_profil' => ['nullable']
         ]);
 
         $user = new User;
@@ -59,9 +57,8 @@ class UsersController extends Controller
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
         $user->role_id = $request->role_id;
+        $user->foto_profil = ' ';
         $user->save();
-
-        // dd($user->role_id);
 
         $roles = Roles::find($user->role_id);
         $roles->jumlah_user = $roles->jumlah_user + 1;
@@ -77,7 +74,6 @@ class UsersController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $users->id],
-            // 'password' => ['required', Rules\Password::defaults()],
             'role_id' => ['required']
         ]);
 

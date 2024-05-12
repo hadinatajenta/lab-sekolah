@@ -6,6 +6,7 @@ use App\Models\Lab;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class LabController extends Controller
 {
@@ -15,20 +16,33 @@ class LabController extends Controller
     }
 
     // Lab View
-    public function lab_view(): View
+    public function lab_view(Request $request): View
     {
-        $lab = Lab::all();
-        return view('kepala_lab.lab', compact('lab'));
+        abort_if(Auth::user()->role_id == 4, 403, 'Kamu tidak memiliki akses');
+        $jumlahLabAktif = Lab::where('status', 'Tersedia')->count();
+        $labTidakAktif = Lab::where('status', 'Tidak tersedia')->count();
+
+        $keyword = $request->input('cari');
+
+        if ($keyword) {
+            $labs = Lab::where(function ($query) use ($keyword) {
+                $query->where('nama_lab', 'LIKE', "%{$keyword}%");
+            })->paginate(15);
+        } else {
+            $labs = Lab::all();
+        }
+
+        return view('kepala_lab.lab', compact('labs', 'jumlahLabAktif', 'labTidakAktif'));
     }
 
     // Create Lab 
     public function create_lab(Request $request)
     {
         $validate = $request->validate([
-            'nama_lab'=>'required',
-            'kapasitas'=>'required',
-            'fasilitas'=>'required',
-            'status'=>'required',
+            'nama_lab' => 'required',
+            'kapasitas' => 'required',
+            'fasilitas' => 'required',
+            'status' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -41,22 +55,22 @@ class LabController extends Controller
             $lab->save();
 
             DB::commit();
-            return redirect()->back()->with('success','Berhasil menambahkan LAB baru');
+            return redirect()->back()->with('success', 'Berhasil menambahkan LAB baru');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error','Gagal menambahkan LAB baru');
+            return redirect()->back()->with('error', 'Gagal menambahkan LAB baru');
         }
     }
 
     // Update Lab
-    public  function update_lab(Request $request, $id)
+    public function update_lab(Request $request, $id)
     {
         $lab = Lab::findOrFail($id);
         $validate = $request->validate([
-            'nama_lab'=>'required|unique:lab,nama_lab,'.$lab->id,
-            'kapasitas'=>'required',
-            'fasilitas'=>'required',
-            'status'=>'required',
+            'nama_lab' => 'required|unique:lab,nama_lab,' . $lab->id,
+            'kapasitas' => 'required',
+            'fasilitas' => 'required',
+            'status' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -68,10 +82,10 @@ class LabController extends Controller
             $lab->save();
 
             DB::commit();
-            return redirect()->back()->with('success','Berhasil Update data LAB ');
+            return redirect()->back()->with('success', 'Berhasil Update data LAB ');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error','Gagal menambahkan LAB baru');
+            return redirect()->back()->with('error', 'Gagal menambahkan LAB baru');
         }
     }
 
@@ -79,18 +93,18 @@ class LabController extends Controller
     public function delete_lab($id)
     {
         $lab = Lab::findOrFail($id);
-        
+
         DB::beginTransaction();
         try {
-            if($lab){
+            if ($lab) {
                 $lab->delete();
             }
 
             DB::commit();
-            return redirect()->back()->with('success','Berhasil hapus LAB ');
+            return redirect()->back()->with('success', 'Berhasil hapus LAB ');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('error','Gagal menemukan LAB ');        
+            return redirect()->back()->with('error', 'Gagal menemukan LAB ');
         }
     }
 
@@ -100,11 +114,11 @@ class LabController extends Controller
         $keyword = $request->input('table-search');
 
         $lab = Lab::query()
-        ->where('nama_lab', 'LIKE', "%{$keyword}%")
-        ->orWhere('kapasitas', 'LIKE', "%{$keyword}%")
-        ->orWhere('fasilitas', 'LIKE', "%{$keyword}%")
-        ->orWhere('status', 'LIKE', "%{$keyword}%")
-        ->get();
+            ->where('nama_lab', 'LIKE', "%{$keyword}%")
+            ->orWhere('kapasitas', 'LIKE', "%{$keyword}%")
+            ->orWhere('fasilitas', 'LIKE', "%{$keyword}%")
+            ->orWhere('status', 'LIKE', "%{$keyword}%")
+            ->get();
 
         return view('kepala_lab.lab', compact('lab'));
 

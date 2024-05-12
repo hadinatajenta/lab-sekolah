@@ -5,6 +5,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LabController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 // Kelas Controller
 Route::prefix('/kelas')->group(function () {
     Route::get('/daftar-kelas', [KelasController::class, 'kelas_view'])->name('kelas.view');
+    Route::post('/daftar-kelas', [KelasController::class, 'cariKelas']);
+    Route::get('/daftar-kelas/{id}', [KelasController::class, 'getSiswaByKelas'])->name('kelas.siswa');
     Route::post('/create-kelas', [KelasController::class, 'create_kelas'])->name('kelas.create');
     Route::put('/update-kelas/{id}', [KelasController::class, 'update_kelas'])->name('kelas.update');
     Route::delete('/delete-kelas/{id}', [KelasController::class, 'delete_kelas'])->name('kelas.delete');
@@ -37,6 +40,14 @@ Route::prefix('/pengguna')->group(function () {
     Route::post('/create-pengguna', [UsersController::class, 'create_user'])->name('pengguna.create');
     Route::put('/create-pengguna/{id}', [UsersController::class, 'update_user'])->name('pengguna.update');
     Route::delete('/delete-pengguna/{id}', [UsersController::class, 'delete_user'])->name('pengguna.delete');
+});
+
+//Siswa controller
+Route::prefix('/siswa')->group(function () {
+    Route::get('/daftar-siswa', [SiswaController::class, 'listSiswa'])->name('siswa.view');
+    Route::post('/create-siswa', [SiswaController::class, 'createSiswa'])->name('create.siswa');
+    Route::put('/update-siswa/{id?}', [SiswaController::class, 'updateSiswa'])->name('update.siswa');
+    Route::delete('/hapus-siswa/{id}', [SiswaController::class, 'deleteSiswa'])->name('delete.siswa');
 });
 // Lab Controller 
 Route::prefix('/lab')->group(function () {

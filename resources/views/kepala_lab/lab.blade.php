@@ -7,12 +7,66 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
+                <div class="p-6 text-gray-900">
+                    <div class="mb-4">
+                        <h4 class="font-bold text-2xl">Dashboard</h4>
+                        <p class="text-gray-600">Hanya Kepala LAB yang dapat Mengelola Dashboard ini.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-1 md:grid-cols-3 grid-cols-1 gap-4 justify-items-start">
+                        {{-- 1 --}}
+                        <div class="bg-[#fcebfe] w-full rounded p-4 flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-buildings bx-lg text-[#ca5ad7]'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-[#923c9c]">Jumlah Lab</span>
+                                <p class="text-lg">{{ $labs->count() }}</p>
+                            </div>
+                        </div>
+                        {{-- 2 --}}
+                        <div class="bg-green-100 w-full rounded p-4 flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-user bx-lg text-green-800'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-[#4f8b3f]">Lab Tersedia</span>
+                                <p class="text-lg"> {{ $jumlahLabAktif }} </p>
+                            </div>
+                        </div>
+                        {{-- 3 --}}
+                        <div class="bg-red-100 w-full rounded p-4  flex items-center">
+                            <div class="mr-2">
+                                <i class='bx bx-user bx-lg text-[#f199af]'></i>
+                            </div>
+                            <div>
+                                <span class="text-lg font-bold text-red-800">Lab Tidak Tersedia
+                                    <button data-tooltip-target="tooltip-hover" data-tooltip-trigger="hover"
+                                        type="button"
+                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none rounded-full focus:ring-blue-300 font-medium text-sm px-4 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">?
+                                    </button>
+
+                                    <div id="tooltip-hover" role="tooltip"
+                                        class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                        Lab dengan status tidak tersedia merupakan lab yang sedang dalam perawatan, lab
+                                        dengan status ini tidak dapat digunakan.
+                                        <div class="tooltip-arrow" data-popper-arrow></div>
+                                    </div>
+                                </span>
+                                <p class="text-lg"> {{ $labTidakAktif }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
             <div class="bg-white overflow-hidden  sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex items-center mb-3 justify-between">
                         <!-- Modal toggle -->
-                        @if (Auth::user()->role_id == 3)
-                            <div>Status LAB</div>
+
+                        @if (Auth::user()->role_id == 4 || Auth::user()->role_id == 3)
+                            <div>Daftar Lab</div>
                         @else
                             <button data-modal-target="lab-modal" data-modal-toggle="lab-modal"
                                 class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 mb-3 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 "
@@ -21,7 +75,7 @@
                             </button>
                         @endif
                         {{-- search --}}
-                        <form class="flex items-center" action="{{ route('lab.search') }}" method="GET">
+                        <form class="flex items-center" action="{{ route('lab.view') }}" method="GET">
                             <label for="simple-search" class="sr-only">Search</label>
                             <div class="relative w-full">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -34,7 +88,7 @@
                                 </div>
                                 <input type="text" id="simple-search"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Cari nama lab ... " name="table-search">
+                                    placeholder="Cari nama lab ... " name="cari">
                             </div>
                             <button type="submit"
                                 class="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -140,25 +194,17 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="relative overflow-x-auto  sm:rounded-lg">
-
-
-
-
                         {{-- notifikasi --}}
                         <x-alert />
-
                         {{-- table daftar kelas --}}
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="p-4">
-                                        <div class="flex items-center">
-                                            <input id="checkbox-all-search" type="checkbox"
-                                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                                        </div>
+                                    <th scope="col" class="px-6 py-3">
+                                        No
                                     </th>
                                     <th scope="col" class="px-6 py-3">
                                         Nama Lab
@@ -178,16 +224,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($lab as $kl)
+                                @foreach ($labs as $index => $kl)
                                     <tr
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td class="w-4 p-4">
-                                            <div class="flex items-center">
-                                                <input id="checkbox-table-search-1" type="checkbox"
-                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                                            </div>
-                                        </td>
+                                        <th scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ $index + 1 }}
+                                        </th>
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ $kl->nama_lab }}
@@ -215,11 +258,15 @@
                                         </td>
                                         <td class="flex items-center px-6 py-4">
                                             {{-- Button edit --}}
-                                            <button @if (Auth::user()->role_id == 3) disabled @endif
-                                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                                                data-modal-toggle="update-lab-{{ $kl->id }}"
-                                                data-modal-target="update-lab-{{ $kl->id }}"><i
-                                                    class='bx bx-edit bx-sm'></i></button>
+                                            @if (Auth::user()->role_id == 1)
+                                                <button @if (Auth::user()->role_id == 3) disabled @endif
+                                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                                    data-modal-toggle="update-lab-{{ $kl->id }}"
+                                                    data-modal-target="update-lab-{{ $kl->id }}"><i
+                                                        class='bx bx-edit bx-sm'></i></button>
+                                            @else
+                                                <i class='bx bx-edit bx-sm'></i>
+                                            @endif
                                             {{-- Modal edit --}}
                                             <div id="update-lab-{{ $kl->id }}" tabindex="-1"
                                                 aria-hidden="true"
@@ -331,11 +378,15 @@
                                             </div>
 
                                             {{-- Button hapus --}}
-                                            <a href="#"
-                                                class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3 @if (Auth::user()->role_id == 3) pointer-events-none @endif"
-                                                data-modal-target="hapus-{{ $kl->id }}"
-                                                data-modal-toggle="hapus-{{ $kl->id }}"><i
-                                                    class='bx bx-trash-alt bx-sm'></i></a>
+                                            @if (Auth::user()->role_id == 1)
+                                                <a href="#"
+                                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3 @if (Auth::user()->role_id == 3) pointer-events-none @endif"
+                                                    data-modal-target="hapus-{{ $kl->id }}"
+                                                    data-modal-toggle="hapus-{{ $kl->id }}"><i
+                                                        class='bx bx-trash-alt bx-sm'></i></a>
+                                            @else
+                                                <i class='bx bx-trash-alt bx-sm'></i>
+                                            @endif
                                             {{-- Modal hapus --}}
                                             <div id="hapus-{{ $kl->id }}" tabindex="-1"
                                                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
